@@ -1453,7 +1453,7 @@ const ExecutiveReportDocument = ({
               <Page size="A4" style={styles.statPage}>
                 <Image style={styles.statBackground} src="/reportImages/laptop.jpg" />
                 <View style={styles.statOverlay}>
-                  <Text style={styles.statHighlight}>$4.45M</Text>
+                  <Text style={styles.statHighlight}>£3.58M</Text>
                   <Text style={styles.statSubText}>
                     average cost of a{"\n"}
                     <Text style={{ fontWeight: "bold" }}>data breach in 2024</Text>
