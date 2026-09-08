@@ -15,6 +15,18 @@ jobs:
         with:
           submodules: true
           lfs: false
+      # Build here instead of letting Oryx do it. Oryx ships a fixed Node list and
+      # cannot satisfy upstream's engines.node range (10.10.0 wants ^22.22.2; Oryx
+      # tops out at 22.22.0), which fails the deploy outright. Reading the version
+      # from package.json keeps this in step with upstream automatically.
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - name: Install dependencies
+        run: npx --yes yarn@1.22.22 install --non-interactive
+      - name: Build
+        run: npx --yes yarn@1.22.22 build
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -22,11 +34,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_OCEAN_047A9E503 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
+          ###### Repository/Build Configurations ######
+          # app_location points at the already-built output because skip_app_build is set.
+          app_location: "out" # Prebuilt app content directory
           api_location: "" # Api source code path - optional
-          output_location: "/out" # Built app content directory - optional
+          output_location: "" # Empty: nothing further to build
+          skip_app_build: true
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
